@@ -1,0 +1,26 @@
+
+.bg-primary {
+    color: black;
+    background-color: #c7d40a !important;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: black;
+}
+
+
+.page-item.active .page-link{
+    background-color: #B0CAC7;
+    border-color: #B0CAC7;
+}
+
+.btn.btn-primary:hover {
+    background-color: #e4f041 !important;
+    color: black;
+}
+
+.btn.btn-primary:focus {
+    background-color: #e25b0c !important;
+    transform: translateY(-2px);
+    box-shadow: 0px 0px 5px  #B0CAC7;
+}
+
+@import '~bootstrap/dist/css/bootstrap.min.css'
