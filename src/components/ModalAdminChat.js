@@ -38,36 +38,12 @@ border-bottom-left-radius: 10%;
 `;
 
 
-export default function ChatModal ({onHide, show}) {
-  const [yourId,setYourId] = useState("")
+export default function ChatModal ({yourId, onHide, show, adminSocket, messages}) {
   const [message, setMessage] = useState("")
-  const [messages, setMessages] = useState([])
-  const socketRef = useRef()
-  const [isRegistered, setIsRegistered] = useState(false)
-  const [name, setName] = useState("")
+
 
   const handleChange = (e) => {
     setMessage(e.target.value)
-  }
-
-  const handleNameChange = (e) => {
-    setName(e.target.value)
-  }
-  const handleNameSubmit = (e) => {
-    e.preventDefault()
-    setIsRegistered(true)
-    socketRef.current = io.connect("http://localhost:8000/admin", {
-      query:{
-        admin: false
-      }
-    })
-    socketRef.current.on("your id", socketId => {
-      setYourId(socketId)
-    })
-    socketRef.current.emit("joinRoom",name)
-    socketRef.current.on("message", message => {
-      setMessages(prevMsjs => [...prevMsjs, message])
-    })
   }
 
   const handleSubmit = (e) => {
@@ -77,18 +53,17 @@ export default function ChatModal ({onHide, show}) {
       id: yourId
     }
     setMessage("")
-    socketRef.current.emit("send message", newObj)
+    adminSocket.emit("send message", newObj)
   }
 
     return (
-        <Modal  show={show} onHide={()=>{onHide();socketRef.current.off()}} aria-labelledby="contained-modal-title-vcenter">
+        <Modal  show={show} onHide={onHide} aria-labelledby="contained-modal-title-vcenter">
           <Modal.Header className="bg-secondary" closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
               Chat
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body className="bg-secondary">
-          {isRegistered ? 
+          <Modal.Body className="bg-secondary"> 
             <Card className="bg-dark" style={{ height: '18rem', overflow:"auto" }}>
               <Card.Body>
               {messages.map((message, index) => {
@@ -111,17 +86,8 @@ export default function ChatModal ({onHide, show}) {
               })}
               </Card.Body>
             </Card>
-          :
-          <Form>
-            <Form.Group>
-              <Form.Label>Escribe tu nombre completo</Form.Label>
-              <Form.Control value={name} onChange={handleNameChange} />
-            </Form.Group>
-            <Button type="submit" onClick={handleNameSubmit} >Iniciar Chat</Button>
-          </Form> }
-          </Modal.Body> 
-          {isRegistered &&
-            <Modal.Footer className="justify-content-md-center bg-secondary">
+          </Modal.Body>
+          <Modal.Footer className="justify-content-md-center bg-secondary">
             <Form  onSubmit={handleSubmit}>
               <Form.Control value={message} onChange={handleChange} as="textarea" rows={2} />
               <Form.Text style={{color: "white"}} className="m-2">
@@ -130,7 +96,5 @@ export default function ChatModal ({onHide, show}) {
               <Button className="bg-primary" type="submit" >Enviar</Button>
             </Form>
           </Modal.Footer>
-          }
-        </Modal>
-      );
-}
+        </Modal>)
+} 
