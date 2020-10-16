@@ -1,51 +1,38 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Container, Card, Row, Button } from 'react-bootstrap';
-import io from "socket.io-client";
 import {ChatText} from 'react-bootstrap-icons';
-import ModalAdminChat from './ModalAdminChat'
+import ModalAdminChat from './ModalAdminChat';
+import {getChats} from '../utils/httpRequests';
 
 export default function ChatAdmin() {
-    const [messages, setMessages] = useState([])
     const [show, setShow] = useState(false)
-    const [yourId,setYourId] = useState()
-    const [rooms, setRooms] = useState([])
-    const socketRef = useRef()
+    const [chats, setChats] = useState([])
+    const chatId = useRef()
 
     useEffect(()=>{
-        socketRef.current = io.connect("http://localhost:8000/admin",{
-            query:{
-                admin: true
-            }
-        })
-        socketRef.current.on("rooms", rooms => {
-            setRooms(rooms)
-        })
-        socketRef.current.on("your id", socketId => {
-            setYourId(socketId)
-          })
-        socketRef.current.on("message", message => {
-              setMessages(prevMsjs => [...prevMsjs, message])
-            })
+        const getSpaces= async ()=>{
+            const dbChats = await getChats()
+            setChats(dbChats)
+        }
+        getSpaces()
     },[])
 
     const handleChat = (e) => {
         setShow(true)
-        socketRef.current.emit("joinRoom", e.target.name)
+        chatId.current = e.target.name
     } 
     return (
         <Container>
             <ModalAdminChat
-                messages={messages}
-                yourId={yourId}
-                adminSocket={socketRef.current}
+                chatId={chatId.current}
                 show={show}
-                onHide={()=> setShow(false)} 
+                onHide={()=>{setShow(false)}} 
             />
             <Card className="bg-secondary p-3">
-                {rooms.length > 0 ? 
-                rooms.map(room =>{
-                    return(<Row key={room} className="justify-content-center">
-                            <Button name={room} onClick={handleChat} className=" bg-primary col-lg-5 m-3 ">{room} <ChatText/></Button>
+                {chats.length > 0 ? 
+                chats.map(chat =>{
+                    return(<Row key={chat._id} className="justify-content-center">
+                            <Button name={chat._id} onClick={handleChat} className=" bg-primary col-lg-5 m-3 ">{chat.name} <ChatText/></Button>
                            </Row>)
                 })
                 :

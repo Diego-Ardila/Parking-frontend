@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {Modal, Col, Button, Card, Form} from "react-bootstrap";
 import styled from "styled-components";
 import io from "socket.io-client";
@@ -38,22 +38,42 @@ border-bottom-left-radius: 10%;
 `;
 
 
-export default function ChatModal ({yourId, onHide, show, adminSocket, messages}) {
-  const [message, setMessage] = useState("")
+export default function ChatModal ({ chatId, onHide, show }) {
+  const [text, setText] = useState("")
+  const [messages, setMessages] = useState([])
+  const socketRef = useRef()
 
+
+  useEffect(()=>{
+    if(show){
+      socketRef.current = io.connect(`${process.env.REACT_APP_SERVER_URL}admin`, {
+        query:{
+          admin: true
+        }
+      })
+      console.log(chatId)
+      socketRef.current.emit("join room admin", chatId)
+      socketRef.current.on("messages", msjs => {
+        console.log(msjs)
+        setMessages(msjs)
+      })
+    }else{
+      socketRef.current && socketRef.current.close()
+    }
+  },[show])
 
   const handleChange = (e) => {
-    setMessage(e.target.value)
+    setText(e.target.value)
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
     const newObj = {
-      body: message,
-      id: yourId
+      chatId,
+      text
     }
-    setMessage("")
-    adminSocket.emit("send message", newObj)
+    setText("")
+    socketRef.current.emit("send message", newObj)
   }
 
     return (
@@ -67,11 +87,11 @@ export default function ChatModal ({yourId, onHide, show, adminSocket, messages}
             <Card className="bg-dark" style={{ height: '18rem', overflow:"auto" }}>
               <Card.Body>
               {messages.map((message, index) => {
-                if (message.id === yourId) {
+                if (message.origin === "admin") {
                   return (
                     <MyRow key={index}>
                       <MyMessage>
-                        {message.body}
+                        {message.text}
                       </MyMessage>
                     </MyRow>
                   )
@@ -79,7 +99,7 @@ export default function ChatModal ({yourId, onHide, show, adminSocket, messages}
                 return (
                   <PartnerRow key={index}>
                     <PartnerMessage>
-                      {message.body}
+                      {message.text}
                     </PartnerMessage>
                   </PartnerRow>
                 )
@@ -89,8 +109,8 @@ export default function ChatModal ({yourId, onHide, show, adminSocket, messages}
           </Modal.Body>
           <Modal.Footer className="justify-content-md-center bg-secondary">
             <Form  onSubmit={handleSubmit}>
-              <Form.Control value={message} onChange={handleChange} as="textarea" rows={2} />
-              <Form.Text style={{color: "white"}} className="m-2">
+              <Form.Control value={text} onChange={handleChange} as="textarea" rows={2} />
+              <Form.Text className="text-muted m-2">
                 Cualquier duda o solicitud que tengas sera atendida por este Chat
               </Form.Text>
               <Button className="bg-primary" type="submit" >Enviar</Button>
