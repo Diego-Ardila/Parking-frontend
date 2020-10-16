@@ -2,6 +2,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {Modal, Col, Button, Card, Form} from "react-bootstrap";
 import styled from "styled-components";
 import io from "socket.io-client";
+import { useForm } from "react-hook-form";
 
 const MyRow = styled.div`
 width: 100%;
@@ -44,8 +45,9 @@ export default function ChatModal ({onHide, show}) {
   const [messages, setMessages] = useState([])
   const socketRef = useRef()
   const [isRegistered, setIsRegistered] = useState(false)
-  const [name, setName] = useState("")
+  //const [name, setName] = useState("")
   const [chatId, setChatId] = useState()
+  const { register, handleSubmit, errors } = useForm();
 
   useEffect(()=>{
     if(!show){
@@ -60,19 +62,20 @@ export default function ChatModal ({onHide, show}) {
     setText(e.target.value)
   }
 
-  const handleNameChange = (e) => {
+  /* const handleNameChange = (e) => {
     setName(e.target.value)
-  }
+  } */
 
-  const handleNameSubmit = (e) => {
-    e.preventDefault()
+  const handleNameSubmit = (data) => {
+    //e.preventDefault()
+    console.log(data.name)
     setIsRegistered(true)
     socketRef.current = io.connect(`${process.env.REACT_APP_SERVER_URL}admin`, {
       query:{
         admin: false
       }
     })
-    socketRef.current.emit("join room user", name)
+    socketRef.current.emit("join room user", data.name)
     socketRef.current.on("chat id", id => {
       setChatId(id)
     })
@@ -82,7 +85,7 @@ export default function ChatModal ({onHide, show}) {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleChatSubmit = (e) => {
     e.preventDefault()
     const newObj = {
       chatId,
@@ -124,18 +127,19 @@ export default function ChatModal ({onHide, show}) {
               </Card.Body>
             </Card>
           :
-          <Form>
+          <Form onSubmit={handleSubmit(handleNameSubmit)}>
             <Form.Group>
               <Form.Label>Escribe tu nombre completo</Form.Label>
-              <Form.Control value={name} onChange={handleNameChange} />
+              <Form.Control  name="name" ref={register({ required: true, minLength: 2 })} />
+              {errors.name && "se requiere que el nombre tenga al menos 2 caracteres"}
             </Form.Group>
-            <Button type="submit" onClick={handleNameSubmit} >Iniciar Chat</Button>
+            <Button type="submit" >Iniciar Chat</Button>
           </Form> }
           </Modal.Body> 
           {isRegistered &&
-            <Modal.Footer className="justify-content-md-center bg-secondary">
-            <Form  onSubmit={handleSubmit}>
-              <Form.Control value={text} onChange={handleChange} as="textarea" rows={2} />
+          <Modal.Footer className="justify-content-md-center bg-secondary">
+            <Form onSubmit={handleChatSubmit}>
+              <Form.Control minlength="3" value={text} onChange={handleChange} type="text" rows={2} />
               <Form.Text style={{color: "white"}} className="m-2">
                 Cualquier duda o solicitud que tengas sera atendida por este Chat
               </Form.Text>

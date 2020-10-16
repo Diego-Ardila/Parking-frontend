@@ -109,7 +109,7 @@ export default function ChatModal ({ chatId, onHide, show }) {
           </Modal.Body>
           <Modal.Footer className="justify-content-md-center bg-secondary">
             <Form  onSubmit={handleSubmit}>
-              <Form.Control value={text} onChange={handleChange} as="textarea" rows={2} />
+              <Form.Control value={text} onChange={handleChange} type="text" rows={2} />
               <Form.Text className="text-muted m-2">
                 Cualquier duda o solicitud que tengas sera atendida por este Chat
               </Form.Text>
