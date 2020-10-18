@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect, useLocation } from "react-router-dom";
+import React, {useState, useEffect} from 'react';
+import { BrowserRouter as Router, Switch, Route, Redirect, useHistory } from "react-router-dom";
 import Header from './pages/Header';
 import Home from './pages/Home';
 import {Helmet} from 'react-helmet';
@@ -8,7 +8,22 @@ import {ChatText} from 'react-bootstrap-icons';
 import Navbar from 'react-bootstrap/Navbar';
 import ChatModal from './components/ChatModal';
 import Admin from './pages/Admin';
+import Login from './pages/Login';
+import Registro from './pages/Registro';
+import User from './pages/User';
 
+function PrivateRoute(props){
+  const history = useHistory()
+  useEffect(()=>{
+    const token = localStorage.getItem("token")
+    if(!token){
+      history.push("/login")
+    }
+  },[])
+  return(
+    <Route {...props}></Route>
+  )
+}
 
 
 function App() {
@@ -33,6 +48,9 @@ function App() {
         />
         <Header/>
         <Switch>
+          <PrivateRoute exact path="/user" component={User} />
+          <Route exact path="/registro" component={Registro} />
+          <Route exact path="/login" component={Login} />
           <Route exact path="/home" component={Home} />
           <Route exact path="/admin" component={()=> <Admin showChat={setShowChat} />} />
           <Redirect from="*" to="/home" />

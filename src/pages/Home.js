@@ -1,4 +1,5 @@
 import React from 'react';
+import {useHistory} from 'react-router-dom';
 import Carousel from 'react-bootstrap/Carousel';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -9,6 +10,8 @@ import Button from 'react-bootstrap/Button';
 
 
 function Home() {
+  const history = useHistory()
+
   return (
     <Container fluid>
       <Row className="justify-content-md-center mt-4">
@@ -59,8 +62,8 @@ function Home() {
                 servicios!!!
              </p>
             <Container className='text-center'>
-                <Button className="bg-primary mr-3">Registro</Button>
-                <Button className="bg-primary">login</Button>
+                <Button onClick={()=> history.push('/registro')} className="bg-primary mr-3">Registro</Button>
+                <Button onClick={()=> history.push('/login')} className="bg-primary">login</Button>
             </Container>
         </Col>
         <Col className="mb-4" lg="4">
