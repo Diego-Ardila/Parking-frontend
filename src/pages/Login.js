@@ -24,8 +24,8 @@ export default function Login() {
         try{
         const {token} = await login(data)
         localStorage.setItem("token", token)
-        swal("Registro Satisfactorio","Tu usuario fue creado satisfactoriamente","success")
         history.push('/user')
+        isSubmitting = true
         }catch(err){
             swal("Error",`${err.response.data}`,"error")
         }
@@ -61,6 +61,7 @@ export default function Login() {
                     </Col>
                 </Form.Row>
                 <Form.Row className="justify-content-center mt-3">
+                {isSubmitting ? <Spinner animation="border" variant="warning" size="xl" /> : null}
                     <Col className="col-lg-6 text-center">
                         <Button className="bg-primary" type="submit">
                         Enviar

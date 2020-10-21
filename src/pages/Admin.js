@@ -10,7 +10,6 @@ import ChatAdmin from '../components/ChatAdmin';
 
 export default function Admin ({showChat}) {
     const [subMenu, setSubMenu] = useState()
-    const location = useLocation()
 
     useEffect(()=>{
         showChat(false)

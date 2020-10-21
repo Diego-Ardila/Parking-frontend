@@ -1,4 +1,6 @@
 
+@import '~bootstrap/dist/css/bootstrap.min.css';
+
 .bg-primary {
     color: black;
     background-color: #c7d40a !important;
@@ -23,4 +25,13 @@
     box-shadow: 0px 0px 5px  #B0CAC7;
 }
 
-@import '~bootstrap/dist/css/bootstrap.min.css'
+.react-calendar{
+    @media screen and (max-width: 991px) {
+        margin-left: 15%;
+    }
+
+    @media screen and (max-width:500px) {
+        margin:0;
+    }
+}
+
