@@ -1,17 +1,30 @@
 import React, { useState, useEffect }  from 'react';
-import {useLocation} from 'react-router-dom'
-import {Button, Container, Card, Row } from 'react-bootstrap';
+import {useHistory} from 'react-router-dom'
+import { Container } from 'react-bootstrap';
 import AdminMenu from '../components/AdminMenu';
 import MensualidadesAdmin from '../components/MensualidadesAdmin';
 import LavaderoAdmin from '../components/LavaderoAdmin';
 import ChatAdmin from '../components/ChatAdmin';
+import { validateAdmin } from '../utils/httpRequests'
+import swal from 'sweetalert'
 
 
 
 export default function Admin ({showChat}) {
     const [subMenu, setSubMenu] = useState()
+    const history = useHistory()
 
     useEffect(()=>{
+        const getData= async()=>{
+          try{
+            const token = localStorage.getItem("token")
+            await validateAdmin(token)
+          }catch(err){
+            swal("No estas autorizado",`Debes registrarte como Administrador para acceder aqui`,"error")
+            history.push("/adminLogin")
+          }
+        }
+        getData()
         showChat(false)
     },[])
 

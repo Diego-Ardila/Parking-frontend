@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from "react-hook-form";
 import {login} from '../utils/httpRequests';
 import swal from 'sweetalert';
-import {useHistory} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 
 
 const logo= "https://res.cloudinary.com/sharedbox/image/upload/v1602101798/Parking%20Alarcon/LOGO_PARQUEADERO_AlARCON_agpwld.png"
@@ -22,18 +22,17 @@ export default function Login() {
       });
     const onSubmit = async (data)=>{
         try{
+        isSubmitting = true
         const {token} = await login(data)
         localStorage.setItem("token", token)
         history.push('/user')
-        isSubmitting = true
         }catch(err){
             swal("Error",`${err.response.data}`,"error")
         }
       }
     return(
         <Container>
-            <Card className="bg-dark p-3 mt-5">
-            <Form onSubmit={handleSubmit(onSubmit)} className="justify-content-center mt-3">
+            <Form onSubmit={handleSubmit(onSubmit)} className="card justify-content-center mt-3">
                 <Form.Row className="justify-content-center">
                     <Col sm={6} md={4} className="text-center">
                         <Image style= {{width: 130}} src={logo} alt="logo"></Image>
@@ -61,15 +60,17 @@ export default function Login() {
                     </Col>
                 </Form.Row>
                 <Form.Row className="justify-content-center mt-3">
-                {isSubmitting ? <Spinner animation="border" variant="warning" size="xl" /> : null}
                     <Col className="col-lg-6 text-center">
-                        <Button className="bg-primary" type="submit">
-                        Enviar
+                        {isSubmitting ? <Col className="col-lg-6 text-center"><Spinner animation="border" variant="warning" size="xl" /></Col>  : null}
+                        <Button disabled={isSubmitting} className="bg-primary" type="submit">
+                         {!isSubmitting ? "Entrar" : "...Cargando"}
                         </Button>
                     </Col>
                 </Form.Row>
+                <Form.Row className="justify-content-center mt-2">
+                    <Link style={{color:"yellow"}} to="/registro">Crea una cuenta</Link>
+                </Form.Row>
                 </Form>
-            </Card>
         </Container>
     )
 }

@@ -28,7 +28,7 @@ export default function ChatAdmin() {
                 show={show}
                 onHide={()=>{setShow(false)}} 
             />
-            <Card className="bg-secondary p-3">
+            <Card className="card mt-5 p-3">
                 {chats.length > 0 ? 
                 chats.map(chat =>{
                     return(<Row key={chat._id} className="justify-content-center">

@@ -2,16 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Container, Modal, Button, Card, Form, Row, Col, Carousel, Jumbotron } from 'react-bootstrap';
 import { useForm, Controller } from "react-hook-form";
 import Calendar from 'react-calendar';
-import { createMensualidad, updateMensualidad } from '../utils/httpRequests';
 import { useHistory } from 'react-router-dom';
-import swal from 'sweetalert';
+import PaymentButton from '../components/PaymentButton';
+
+const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 
 export default function Mensualidades(props) {
+    let [dataDb, setDataDb] = useState(null)
     const [update, setUpdate] = useState(null)
     const [index, setIndex] = useState(0)
     const [mensualidades, setMensualidades] = useState([])
-    const [user, setUser] = useState()
+    const [user, setUser] = useState(null)
     const [show, setShow] = useState(false)
+    const [showPay, setShowPay] = useState(false)
     const { register, handleSubmit, control, errors } = useForm();
     const history = useHistory()
 
@@ -22,52 +25,80 @@ export default function Mensualidades(props) {
     },[])
 
     const onSubmit = async (data) => {
-        try{
-          if(!update){
-            const mensualidad = await createMensualidad(data)
-            setMensualidades(prev => [...prev, mensualidad] )
-            swal("Mensualidad Creada",`tu mensualidad fue creada satisfactoriamente y quedo vigente hasta ${mensualidad.finDate}`,"success")
-          }else{
-            const mensualidad = await updateMensualidad(data)
-            const newMensualidades = mensualidades.filter(m => {
-                                        return m._id !== mensualidad._id
-                                      }).concat(mensualidad)
-            setMensualidades(newMensualidades)
-            swal("Mensualidad Actualizada",`tu mensualidad quedo vigente hasta ${mensualidad.finDate}`,"success")
-          }
-        }catch(err){
-            console.log(err)
-        }
-        setShow(false)
+      switch(data.vehicle){
+        case "moto" : data.price = 36000;
+        break;
+        default: data.price = 110000;
+      }
+      setDataDb(data)
+      setShowPay(true)
     }
 
     return (
         <Container>
           <Row className="justify-content-center mt-4 mb-5">
+            <Col className="text-center">
+            <Card className="align-content-center">
+              <Card.Header style={{color:"whitesmoke"}}><h4>Deseas iniciar una nueva mensualidad con nosotros?</h4></Card.Header>
+              <Card.Body>
+                <Card.Title style={{color:"whitesmoke"}}>Moto: $36.000 <br/> Carro/Camioneta: $110.000</Card.Title>
+                <Button size="lg" className="bg-primary mt-4" onClick={()=>{ setUpdate(null); setShow(true) }}> Nueva Mensualidad </Button>
+              </Card.Body>
+            </Card>
+            </Col>
+          </Row>
+          <Row className="justify-content-center mt-4 mb-5">
             <Col md={8} lg={10} className="text-center">
-            <Carousel activeIndex={index} onSelect={(selectedIndex,e)=> setIndex(selectedIndex) } interval={null}>
+            <Carousel className="card" activeIndex={index} onSelect={(selectedIndex,e)=> setIndex(selectedIndex) } interval={null}>
                   {mensualidades.length === 0 ?
                     <Carousel.Item>
-                        <Jumbotron className="bg-dark">
-                            <h3 style={{color:"whitesmoke"}}>Aun no tienes mensualidades</h3>
-                            <p style={{color:"whitesmoke"}}>Te invitamos a que pulses el boton de abajo e inicies una nueva mensualidad con nosotros</p>
+                        <Jumbotron className="card text-center">
+                            <h3 style={{color:"whitesmoke"}}>Hola {user && user.name} aun no tienes mensualidades</h3>
+                            <p style={{color:"whitesmoke"}}>Te invitamos a que pulses el boton de arriba e inicies una nueva mensualidad con nosotros</p>
                         </Jumbotron>
                     </Carousel.Item> :
-                    mensualidades.map(mensualidad => {
+                    mensualidades.map((mensualidad) => {
                     if(new Date(mensualidad.finDate.split("/").reverse().join(",")).getTime() > new Date().getTime()){
-                      return(<Carousel.Item>
-                                <Jumbotron className="bg-dark">
-                                    <h5 style={{color:"whitesmoke"}}>Tienes una mensualiadad activa desde {mensualidad.inDate} hasta {mensualidad.finDate} del vehiculo de placas {mensualidad.badge} </h5>
-                                    <p style={{color:"whitesmoke"}}>Aqui puedes renovarla cuando quieras</p>
-                                    <Button onClick={()=>{setShow(true);setUpdate(mensualidad)}} className="bg-primary m-3">Renovar Mensualidad</Button>
+                      return(<Carousel.Item key={mensualidad._id} >
+                                <Jumbotron className="card text-center">
+                                  <Row className="text-center">
+                                    <Col md={3}></Col>
+                                    <Col md={6} ><h4 style={{color:"#00FF00"}}>Esta Mensualidad esta Activa</h4></Col>
+                                    <Col md={3}></Col>
+                                  </Row>
+                                    <Row className="justify-content-center m-4">
+                                      <Col style={{color:"whitesmoke"}}> <h5>Fecha Inicial: {mensualidad.inDate}</h5></Col>
+                                      <Col style={{color:"whitesmoke"}}><h5>Fecha Final: {mensualidad.finDate}</h5></Col>
+                                    </Row>
+                                    <Row className="justify-content-center m-4">
+                                    <Col style={{color:"whitesmoke"}}> <h5>Placas del Vehiculo: {mensualidad.badge}</h5></Col>
+                                      <Col style={{color:"whitesmoke"}}><h5>Tipo de Vehiculo: {mensualidad.vehicle}</h5></Col>
+                                    </Row>
+                                    <Row className="mt-4">
+                                      <Col>
+                                        <p style={{color:"whitesmoke"}}>Aqui puedes renovarla cuando quieras</p>
+                                        <Button onClick={()=>{setShow(true);setUpdate(mensualidad)}} className="bg-primary">Renovar Mensualidad</Button>
+                                      </Col>
+                                    </Row>
                                 </Jumbotron>
                             </Carousel.Item>)
                     }else{
-                      return(<Carousel.Item>
-                                <Jumbotron className="bg-dark">
-                                    <h3 style={{color:"whitesmoke"}}>Tu mensualidad se vencio el {mensualidad.finDate}</h3>
-                                    <p style={{color:"whitesmoke"}}>Aqui puedes renovarla</p>
-                                    <Button onClick={()=>{setShow(true);setUpdate(mensualidad)}} className="bg-primary m-3">Renovar Mensualidad</Button>
+                      return(<Carousel.Item key={mensualidad._id}>
+                                <Jumbotron className="card text-center">
+                                  <h4 style={{color:"#FF3333"}}>Esta Mensualidad esta Vencida</h4>
+                                    <Row className="justify-content-center m-4">
+                                      <Col style={{color:"whitesmoke"}}> <h5>Fecha Vencimiento: {mensualidad.finDate}</h5></Col>
+                                    </Row>
+                                    <Row className="justify-content-center m-4">
+                                      <Col style={{color:"whitesmoke"}}> <h5>Placas del Vehiculo: {mensualidad.badge}</h5></Col>
+                                      <Col style={{color:"whitesmoke"}}><h5>Tipo de Vehiculo: {mensualidad.vehicle}</h5></Col>
+                                    </Row>
+                                    <Row className="mt-4">
+                                      <Col>
+                                        <p style={{color:"whitesmoke"}}>Aqui puedes renovarla cuando quieras</p>
+                                        <Button onClick={()=>{setShow(true);setUpdate(mensualidad)}} className="bg-primary">Renovar Mensualidad</Button>
+                                      </Col>
+                                    </Row>
                                 </Jumbotron>
                             </Carousel.Item>)
                     }
@@ -76,17 +107,12 @@ export default function Mensualidades(props) {
               </Carousel>
             </Col>
           </Row>
-          <Row className="justify-content-center mt-2 mb-5">
-              <Col className="text-center">
-                <Button size="lg" className="bg-primary" onClick={()=>{ setUpdate(null); setShow(true) }}> Nueva Mensualidad </Button>
-              </Col>
-          </Row>
-          <Modal size="lg" show={show} onHide={()=>{ setShow(false) }}>
-            <Modal.Header closeButton>
-              <Modal.Title>Iniciar Nueva Mensualidad</Modal.Title>
+          <Modal className="card" size="lg" show={show} onHide={()=>{ setShow(false) }}>
+            <Modal.Header className="bg-dark" closeButton>
+              <Modal.Title style={{color:"whitesmoke"}}>Iniciar Nueva Mensualidad</Modal.Title>
             </Modal.Header>
             <Form onSubmit={handleSubmit(onSubmit)}>
-            <Modal.Body>
+            <Modal.Body className="card">
             <Row>
                 <Col md={12} lg={6}>
                   <Form.Group>
@@ -141,8 +167,8 @@ export default function Mensualidades(props) {
                 </Col>
             </Row>
             </Modal.Body>
-            <Modal.Footer>
-              <Button className="bg-primary" onClick={()=>{ setShow(false) }}>
+            <Modal.Footer className="bg-dark">
+              <Button className="bg-secondary" onClick={()=>{ setShow(false) }}>
                   Cerrar
               </Button>
               <Button type="submit" className="bg-primary">
@@ -150,6 +176,21 @@ export default function Mensualidades(props) {
               </Button>
             </Modal.Footer>
           </Form>
+          </Modal>
+          <Modal  show={showPay} backdrop="static">
+            <Modal.Header className="bg-dark" closeButton>
+              <Modal.Title style={{color:"whitesmoke"}}>Estas a un paso de {update ? "renovar" : "iniciar"} tu mensualidad </Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="card">Confirmas el pago de {dataDb && dataDb.price} por tu mensualidad de {dataDb && dataDb.vehicle} por el mes de {dataDb && months[dataDb.date.getMonth()]} </Modal.Body>
+            <Modal.Footer className="bg-dark">
+              <Button variant="secondary" onClick={async ()=>{setShowPay(false)}}>
+                Cancelar
+              </Button>
+              <PaymentButton
+                data={dataDb}
+                userName={user && user.name}
+                update= {update} />
+            </Modal.Footer>
           </Modal>
         </Container>
     )

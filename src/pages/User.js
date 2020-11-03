@@ -8,7 +8,7 @@ import { getUser } from '../utils/httpRequests'
 
 export default function User () {
 
-    let [user,setUser] = useState()
+    let [user,setUser] = useState("")
     const history = useHistory()
 
     useEffect(()=>{
@@ -18,8 +18,8 @@ export default function User () {
             const newUser = await getUser(token)
             setUser(newUser)
               }catch(err){
-            console.log(err)
             swal("No estas autorizado",`Debes registrarte para acceder aqui`,"error")
+            history.push("/login")
           }
         }
         getData()
@@ -28,8 +28,9 @@ export default function User () {
 
 
     return(
-    <Container className="bg-dark p-3">
-        <Card className="bg-secondary p-3">
+    <Container className="text-center p-3">
+        <h3 style={{color:"whitesmoke"}}>Bienvenido(a) {user && user.name}</h3>
+        <Card className="card mt-5 p-3">
             <Row className="justify-content-center">
                 <Button className=" bg-primary col-lg-5 m-3 " onClick={()=>{ history.push({pathname:'/perfil', state: user}) }} >Perfil Personal</Button>
             </Row>

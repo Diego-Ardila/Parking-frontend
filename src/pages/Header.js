@@ -19,9 +19,11 @@ function Header() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link href="/login">Login</Nav.Link>
+            <Nav.Link href="/adminLogin">Login Admin</Nav.Link>
+            <Nav.Link href="/login">Login Usuario</Nav.Link>
             <Nav.Link href="/registro">Nuevo Usuario</Nav.Link>
             <Nav.Link href="/admin">Admin</Nav.Link>
+            <Nav.Link href="/user">Usuario</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

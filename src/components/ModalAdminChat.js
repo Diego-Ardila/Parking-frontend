@@ -51,10 +51,8 @@ export default function ChatModal ({ chatId, onHide, show }) {
           admin: true
         }
       })
-      console.log(chatId)
       socketRef.current.emit("join room admin", chatId)
       socketRef.current.on("messages", msjs => {
-        console.log(msjs)
         setMessages(msjs)
       })
     }else{

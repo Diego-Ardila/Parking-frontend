@@ -14,38 +14,8 @@ function Home() {
 
   return (
     <Container fluid>
-      <Row className="justify-content-md-center mt-4">
-        <Col lg="8">
-        <Carousel>
-            <Carousel.Item>
-                <img
-                height="350"
-                className="d-block w-100"
-                src="https://res.cloudinary.com/sharedbox/image/upload/v1601927385/sharedBox/file_vndpri.jpg"
-                alt="First slide"
-                />
-            </Carousel.Item>
-            <Carousel.Item>
-                <img
-                height="350"
-                className="d-block w-100"
-                src="https://res.cloudinary.com/sharedbox/image/upload/v1601927385/sharedBox/file_uu3j2l.jpg"
-                alt="Second slide"
-                />
-            </Carousel.Item>
-            <Carousel.Item>
-                <img
-                height="350"
-                className="d-block w-100"
-                src="https://res.cloudinary.com/sharedbox/image/upload/v1601927385/sharedBox/file_bm0qcf.jpg"
-                alt="Third slide"
-                />
-            </Carousel.Item>
-        </Carousel>
-        </Col>
-      </Row>
-      <Row className="justify-content-md-center m-4">
-         <Col className="bg-dark p-3 mb-4" lg="8">
+      <Row className="justify-content-md-center mt-5">
+         <Col className="card p-3 mb-4" lg="8">
              <h3 style={{color: "yellow", textAlign: "center"}}>¿Buscando donde parquear?</h3>
              <p style={{color: "white"}}>
                  En <span>Parqueadero Alarcon</span> queremos ofrecerte el mejor de los servicios,
@@ -65,19 +35,6 @@ function Home() {
                 <Button onClick={()=> history.push('/registro')} className="bg-primary mr-3">Registro</Button>
                 <Button onClick={()=> history.push('/login')} className="bg-primary">login</Button>
             </Container>
-        </Col>
-        <Col className="mb-4" lg="4">
-            <img
-            height="350"
-            className="d-block w-100"
-            src="https://res.cloudinary.com/sharedbox/image/upload/v1602102306/Parking%20Alarcon/250920-pico-placa-actualidad_e5o0de.png"
-            alt="Pico y Placa"
-            />
-        </Col>
-      </Row>
-      <Row className="justify-content-md-center mt-4">
-        <Col className="bg-dark p-3 mb-4" lg="8">
-            
         </Col>
       </Row>
     </Container>
