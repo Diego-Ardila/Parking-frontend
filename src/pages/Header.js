@@ -25,7 +25,10 @@ function Header() {
             <Nav.Link href="/admin">Admin</Nav.Link>
             <Nav.Link href="/user">Usuario</Nav.Link>
           </Nav>
-        </Navbar.Collapse>
+          <Nav className="justify-content-end">
+                <Nav.Link href="/logout">Cerrar sesion</Nav.Link>
+          </Nav>
+        </Navbar.Collapse >
       </Navbar>
   );
 }

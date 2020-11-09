@@ -16,6 +16,7 @@ export default function User () {
           try{
             const token = localStorage.getItem("token")
             const newUser = await getUser(token)
+            
             setUser(newUser)
               }catch(err){
             swal("No estas autorizado",`Debes registrarte para acceder aqui`,"error")

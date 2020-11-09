@@ -1,7 +1,7 @@
-import React,{ useState } from "react";
+import React from "react";
 import {useHistory} from 'react-router-dom';
 import * as Yup from "yup";
-import { Container, Card, Form, Button, Col, Image, Spinner, Row } from "react-bootstrap";
+import { Container, Form, Button, Col, Spinner, Row } from "react-bootstrap";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from "react-hook-form";
 import {createUser} from '../utils/httpRequests';
@@ -20,7 +20,7 @@ export default function Registro() {
     const history = useHistory()
     let { register, handleSubmit, errors, formState:{isSubmitting} } = useForm({
         resolver: yupResolver(formSchema)
-      });
+    });
 
       const onSubmit= async (data)=>{
           try{
@@ -36,8 +36,8 @@ export default function Registro() {
       }
     return (
         <Container>
-            <Row className="justify-content-md-center mt-5 mb-5">
-                <Col className="card" md={4} sm={11}>
+            <Row className="justify-content-md-center mt-5 mb-5 ">
+                <Col className="card p-3" md={4} sm={11}>
                 <Form onSubmit={handleSubmit(onSubmit)}  noValidate>
                     <Form.Group >
                         <Form.Label  style={{color: "white"}}>Nombre</Form.Label>

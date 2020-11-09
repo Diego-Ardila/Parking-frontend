@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { BagCheck } from "react-bootstrap-icons";
+import swal from "sweetalert";
 import { createMensualidad, updateMensualidad } from '../utils/httpRequests';
 
 export default function PayButton ({data, userName, update}) {
@@ -12,11 +13,13 @@ export default function PayButton ({data, userName, update}) {
             try{
                 if(!update){
                     newMensualidad = await createMensualidad(data)
+                }else if(update === "direct pay"){
+                    newMensualidad = data
                 }else{
                     newMensualidad = await updateMensualidad(data)
                 }
               }catch(err){
-                  console.log(err)
+                swal("Error",`${err.response.data}`,"error")
               }
               setMensualidad( newMensualidad )
         }

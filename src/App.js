@@ -15,6 +15,7 @@ import Mensualidades from './components/Mensualidades';
 import Lavadero from './components/Lavadero';
 import Perfil from './components/Perfil';
 import Response from './pages/Response';
+import Logout from './pages/Logout';
 
 function PrivateRoute(props){
   const history = useHistory()
@@ -54,6 +55,7 @@ function App() {
           <PrivateRoute exact path="/Perfil" component={Perfil}/> 
           <PrivateRoute exact path="/Mensualidades" component={Mensualidades}/>
           <PrivateRoute exact path="/user" component={User} />
+          <PrivateRoute exact path="/logout" component={Logout} />
           <Route exact path="/registro" component={Registro} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/adminLogin" component={AdminLogin} />

@@ -59,6 +59,25 @@ export const adminLogin= async (data) => {
     }
 }
 
+export const updateUser= async (data) => {
+    const token = localStorage.getItem('token')
+    try{
+        const response = await axios({
+            method:"PUT",
+            baseURL: process.env.REACT_APP_SERVER_URL,
+            url:"/user",
+            headers:{
+                Authorization:`Bearer ${token}`
+            },
+            data
+        })
+        return response.data
+    }
+    catch(err){
+        throw err
+    }
+}
+
 export const getUser= async (token) => {
     try{
         const response = await axios({
@@ -100,6 +119,25 @@ export const createMensualidad= async (data) => {
             method:"POST",
             baseURL: process.env.REACT_APP_SERVER_URL,
             url:"/mensualidades",
+            headers:{
+                Authorization:`Bearer ${token}`
+            },
+            data
+        })
+        return response.data
+    }
+    catch(err){
+        throw err
+    }
+}
+
+export const createLavado= async (data) => {
+    const token = localStorage.getItem('token')
+    try{
+        const response = await axios({
+            method:"POST",
+            baseURL: process.env.REACT_APP_SERVER_URL,
+            url:"/lavadero",
             headers:{
                 Authorization:`Bearer ${token}`
             },

@@ -63,7 +63,7 @@ export default function Mensualidades(props) {
                                 <Jumbotron className="card text-center">
                                   <Row className="text-center">
                                     <Col md={3}></Col>
-                                    <Col md={6} ><h4 style={{color:"#00FF00"}}>Esta Mensualidad esta Activa</h4></Col>
+                                    <Col md={6} >{mensualidad.paid ? <h4 style={{color:"#00FF00"}}>Esta Mensualidad esta Activa</h4> : <h4 style={{color:"#FF3333"}}>Esta Mensualidad aun no esta pagada</h4>}</Col>
                                     <Col md={3}></Col>
                                   </Row>
                                     <Row className="justify-content-center m-4">
@@ -77,7 +77,12 @@ export default function Mensualidades(props) {
                                     <Row className="mt-4">
                                       <Col>
                                         <p style={{color:"whitesmoke"}}>Aqui puedes renovarla cuando quieras</p>
-                                        <Button onClick={()=>{setShow(true);setUpdate(mensualidad)}} className="bg-primary">Renovar Mensualidad</Button>
+                                        {mensualidad.paid ? 
+                                        <Button onClick={()=>{setShow(true);setUpdate(mensualidad)}} className="bg-primary">Renovar Mensualidad</Button> : 
+                                        <PaymentButton 
+                                          data={mensualidad}
+                                          userName={user && user.name}
+                                          update= {"direct pay"} />}
                                       </Col>
                                     </Row>
                                 </Jumbotron>
@@ -177,7 +182,7 @@ export default function Mensualidades(props) {
             </Modal.Footer>
           </Form>
           </Modal>
-          <Modal  show={showPay} backdrop="static">
+          <Modal  show={showPay} backdrop="static" onHide={()=>{setShowPay(false)}}>
             <Modal.Header className="bg-dark" closeButton>
               <Modal.Title style={{color:"whitesmoke"}}>Estas a un paso de {update ? "renovar" : "iniciar"} tu mensualidad </Modal.Title>
             </Modal.Header>
