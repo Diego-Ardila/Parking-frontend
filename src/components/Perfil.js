@@ -42,7 +42,7 @@ export default function Perfil() {
 
     return (
         <Container>
-            <Row className="text-center mt-5 mb-5">
+            <Row className="justify-content-md-center mt-5 mb-5">
                 <Col className="text-center card p-5" md={4} sm={11}>
                 <Form onSubmit={handleSubmit(onSubmit)} >
                     <Form.Group >
