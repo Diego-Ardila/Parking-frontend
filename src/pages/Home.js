@@ -17,7 +17,7 @@ function Home() {
       <Row className="mt-5">
          <Col className="card p-3 mb-4" lg="8">
              <h3 style={{color: "yellow", textAlign: "center"}}>¿Buscando donde parquear?</h3>
-             <p style={{color: "white"}}>
+             <p style={{color: "white", textAlign:"left"}}>
                  En <span>Parqueadero Alarcon</span> queremos ofrecerte el mejor de los servicios,
                  por eso te traemos esta aplicacion, en la cual podras tener acceso a diferentes
                  servicios, desde la comodidad de tu dispositivo movil o computador, tales como: 
