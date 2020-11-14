@@ -14,7 +14,7 @@ function Home() {
 
   return (
     <Container fluid>
-      <Row className="justify-content-md-center mt-5">
+      <Row className="mt-5">
          <Col className="card p-3 mb-4" lg="8">
              <h3 style={{color: "yellow", textAlign: "center"}}>¿Buscando donde parquear?</h3>
              <p style={{color: "white"}}>
