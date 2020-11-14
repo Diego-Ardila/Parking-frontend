@@ -45,7 +45,6 @@ export default function ChatModal ({onHide, show}) {
   const [messages, setMessages] = useState([])
   const socketRef = useRef()
   const [isRegistered, setIsRegistered] = useState(false)
-  const [name, setName] = useState("")
   const [chatId, setChatId] = useState()
   const { register, handleSubmit, errors } = useForm();
 
@@ -62,12 +61,8 @@ export default function ChatModal ({onHide, show}) {
     setText(e.target.value)
   }
 
-  const handleNameChange = (e) => {
-    setName(e.target.value)
-  } 
 
   const handleNameSubmit = (data) => {
-    e.preventDefault()
     console.log(data.name)
     setIsRegistered(true)
     socketRef.current = io.connect(`${process.env.REACT_APP_SERVER_URL}admin`, {
